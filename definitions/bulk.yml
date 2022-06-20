@@ -16,38 +16,29 @@ info:
     url: "https://twitter.com/Nexmo/profile_image?size=original"
   x-apiClientRegistration: "https://dashboard.nexmo.com/sign-up"
   x-label: Alpha
+tags:
+  - name: actions
+  - name: events
+  - name: items
+  - name: jobs
+  - name: lists
+  - name: runs
+  - name: webhooks
 servers:
   - url: https://api-eu.dev.v1.vonagenetworks.net/v0.1/bulk
     description: dev env in EU geo
   - url: https://api-eu.vonage.com/v0.1/bulk
     description: prod env in EU geo
-tags: [ ]
+security:
+  - bearerAuth: [ ]
 paths:
   /lists:
-    post:
-      operationId: createList
-      summary: Create list
-      parameters: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateListDto'
-      responses:
-        '201':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListDto'
-      tags:
-        - lists
     get:
       operationId: findAllLists
       summary: Find all lists
       parameters:
-        - required: false
+        - example: 2
+          required: false
           name: page
           in: query
           schema:
@@ -55,6 +46,7 @@ paths:
             default: 1
             type: number
         - name: page_size
+          example: 100
           required: false
           in: query
           schema:
@@ -82,12 +74,31 @@ paths:
                               $ref: '#/components/schemas/ListDto'
       tags:
         - lists
-  /lists/{id}:
+    post:
+      operationId: createList
+      summary: Create list
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateListDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDto'
+      tags:
+        - lists
+  /lists/{list_id}:
     get:
       operationId: getList
       summary: Get list by id
       parameters:
-        - name: id
+        - name: list_id
           required: true
           in: path
           schema:
@@ -105,7 +116,7 @@ paths:
       operationId: updateList
       summary: Update list
       parameters:
-        - name: id
+        - name: list_id
           required: true
           in: path
           schema:
@@ -129,7 +140,7 @@ paths:
       operationId: deleteList
       summary: Delete list
       parameters:
-        - name: id
+        - name: list_id
           required: true
           in: path
           schema:
@@ -139,12 +150,12 @@ paths:
           description: ''
       tags:
         - lists
-  /lists/{id}/reset:
+  /lists/{list_id}/reset:
     post:
       operationId: resetList
       summary: Reset list - delete all items
       parameters:
-        - name: id
+        - name: list_id
           required: true
           in: path
           schema:
@@ -154,14 +165,12 @@ paths:
           description: ''
       tags:
         - lists
-  /lists/{id}/refresh:
+  /lists/{list_id}/refresh:
     post:
       operationId: refreshList
-      summary: >-
-        Refresh list - delete all items and sync from the datasource. Refresh is
-        invalid for manual list
+      summary: Refresh list - delete all items and sync from the datasource. Refresh is invalid for manual list
       parameters:
-        - name: id
+        - name: list_id
           required: true
           in: path
           schema:
@@ -171,42 +180,18 @@ paths:
           description: ''
       tags:
         - lists
-  /lists/{listId}/items:
-    post:
-      operationId: createListItem
-      summary: Create list item
-      parameters:
-        - name: listId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateListItemDto'
-      responses:
-        '201':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListItemDto'
-      tags:
-        - lists
-        - items
+  /lists/{list_id}/items:
     get:
       operationId: listItems
       summary: Iterate over list items
       parameters:
-        - name: listId
+        - name: list_id
           required: true
           in: path
           schema:
             type: string
-        - required: false
+        - example: 2
+          required: false
           name: page
           in: query
           schema:
@@ -214,6 +199,7 @@ paths:
             default: 1
             type: number
         - name: page_size
+          example: 100
           required: false
           in: query
           schema:
@@ -242,17 +228,58 @@ paths:
       tags:
         - lists
         - items
-  /lists/{listId}/items/{itemId}:
-    get:
-      operationId: getListItem
-      summary: Get list item by id
+    post:
+      operationId: createListItem
+      summary: Create list item
       parameters:
-        - name: listId
+        - name: list_id
           required: true
           in: path
           schema:
             type: string
-        - name: itemId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateListItemDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListItemDto'
+      tags:
+        - lists
+        - items
+  /lists/{list_id}/items/download:
+    get:
+      operationId: downloadItems
+      summary: Download list items
+      parameters:
+        - name: list_id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - lists
+        - items
+  /lists/{list_id}/items/{item_id}:
+    get:
+      operationId: getListItem
+      summary: Get list item by id
+      parameters:
+        - name: list_id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: item_id
           required: true
           in: path
           schema:
@@ -271,12 +298,12 @@ paths:
       operationId: updateListItem
       summary: Update list item
       parameters:
-        - name: listId
+        - name: list_id
           required: true
           in: path
           schema:
             type: string
-        - name: itemId
+        - name: item_id
           required: true
           in: path
           schema:
@@ -301,12 +328,12 @@ paths:
       operationId: deleteListItem
       summary: Delete list item
       parameters:
-        - name: listId
+        - name: list_id
           required: true
           in: path
           schema:
             type: string
-        - name: itemId
+        - name: item_id
           required: true
           in: path
           schema:
@@ -317,12 +344,12 @@ paths:
       tags:
         - lists
         - items
-  /lists/{listId}/items/import:
+  /lists/{list_id}/items/import:
     post:
       operationId: importItems
       summary: Import list items
       parameters:
-        - name: listId
+        - name: list_id
           required: true
           in: path
           schema:
@@ -334,30 +361,12 @@ paths:
         - lists
         - items
   /actions:
-    post:
-      operationId: createAction
-      summary: Create action_call
-      parameters: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateActionDto'
-      responses:
-        '201':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionDto'
-      tags:
-        - actions
     get:
       operationId: findAllActions
       summary: Find all actions
       parameters:
-        - required: false
+        - example: 2
+          required: false
           name: page
           in: query
           schema:
@@ -365,6 +374,7 @@ paths:
             default: 1
             type: number
         - name: page_size
+          example: 100
           required: false
           in: query
           schema:
@@ -390,6 +400,25 @@ paths:
                             readOnly: true
                             items:
                               $ref: '#/components/schemas/ActionDto'
+      tags:
+        - actions
+    post:
+      operationId: createAction
+      summary: Create action_call
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateActionDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionDto'
       tags:
         - actions
   /actions/{id}:
@@ -454,30 +483,12 @@ paths:
       tags:
         - actions
   /jobs:
-    post:
-      operationId: createJob
-      summary: Create job
-      parameters: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateJobDto'
-      responses:
-        '201':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JobDto'
-      tags:
-        - jobs
     get:
       operationId: findAllJobs
       summary: Find all jobs
       parameters:
-        - required: false
+        - example: 2
+          required: false
           name: page
           in: query
           schema:
@@ -485,6 +496,7 @@ paths:
             default: 1
             type: number
         - name: page_size
+          example: 100
           required: false
           in: query
           schema:
@@ -510,6 +522,25 @@ paths:
                             readOnly: true
                             items:
                               $ref: '#/components/schemas/JobDto'
+      tags:
+        - jobs
+    post:
+      operationId: createJob
+      summary: Create job
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJobDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobDto'
       tags:
         - jobs
   /jobs/{id}:
@@ -574,7 +605,8 @@ paths:
       operationId: findEventsAll
       summary: Get events
       parameters:
-        - required: false
+        - example: 2
+          required: false
           name: page
           in: query
           schema:
@@ -582,6 +614,7 @@ paths:
             default: 1
             type: number
         - name: page_size
+          example: 100
           required: false
           in: query
           schema:
@@ -607,34 +640,19 @@ paths:
                             readOnly: true
                             items:
                               oneOf:
-                                - $ref: >-
-                                    #/components/schemas/ActionCallSucceededEvent
+                                - $ref: '#/components/schemas/ActionCallSucceededEvent'
                                 - $ref: '#/components/schemas/ActionCallFailedEvent'
                                 - $ref: '#/components/schemas/ActionCallInfoEvent'
                                 - $ref: '#/components/schemas/RecipientResponseEvent'
       tags:
         - events
   /runs:
-    post:
-      operationId: scheduleAtRun
-      summary: Start job
-      parameters: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateJobRunDto'
-      responses:
-        '202':
-          description: ''
-      tags:
-        - runs
     get:
       operationId: findAllRuns
       summary: Find all runs
       parameters:
-        - required: false
+        - example: 2
+          required: false
           name: page
           in: query
           schema:
@@ -642,6 +660,7 @@ paths:
             default: 1
             type: number
         - name: page_size
+          example: 100
           required: false
           in: query
           schema:
@@ -669,16 +688,16 @@ paths:
                               $ref: '#/components/schemas/ActionDto'
       tags:
         - runs
-  /runs/{id}/stop:
     post:
-      operationId: stopJobRun
-      summary: Initiate run stop
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
+      operationId: scheduleAtRun
+      summary: Start job
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJobRunDto'
       responses:
         '202':
           description: ''
@@ -708,7 +727,8 @@ paths:
       operationId: findEventsAllRun
       summary: Get job run events
       parameters:
-        - required: false
+        - example: 2
+          required: false
           name: page
           in: query
           schema:
@@ -716,6 +736,7 @@ paths:
             default: 1
             type: number
         - name: page_size
+          example: 100
           required: false
           in: query
           schema:
@@ -726,7 +747,7 @@ paths:
         - name: id
           required: true
           in: path
-          schema: { }
+          schema: {}
       responses:
         '200':
           description: ''
@@ -745,8 +766,7 @@ paths:
                             readOnly: true
                             items:
                               oneOf:
-                                - $ref: >-
-                                    #/components/schemas/ActionCallSucceededEvent
+                                - $ref: '#/components/schemas/ActionCallSucceededEvent'
                                 - $ref: '#/components/schemas/ActionCallFailedEvent'
                                 - $ref: '#/components/schemas/ActionCallInfoEvent'
                                 - $ref: '#/components/schemas/RecipientResponseEvent'
@@ -760,7 +780,7 @@ paths:
         - name: id
           required: true
           in: path
-          schema: { }
+          schema: {}
       responses:
         '200':
           description: ''
@@ -770,38 +790,51 @@ paths:
                 $ref: '#/components/schemas/StatsRunSummaryDto'
       tags:
         - runs
+  /runs/{id}/stop:
+    post:
+      operationId: stopJobRun
+      summary: Initiate run stop
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '202':
+          description: ''
+      tags:
+        - runs
   /webhooks/actions/status:
     post:
       operationId: actionStatus
       summary: Webhook endpoint to handle action call status for async actions
-      parameters: [ ]
+      parameters: []
       responses:
         '200':
           description: ''
       tags:
         - webhooks
       security:
-        - NA: [ ]
+        - {}
   /webhooks/recipients/responses:
     post:
       operationId: recipientResponse
       summary: Webhook endpoint to handle recipient responses
-      parameters: [ ]
+      parameters: []
       responses:
         '200':
           description: ''
       tags:
         - webhooks
       security:
-        - NA: [ ]
+        - {}
 components:
   securitySchemes:
     bearerAuth:
       scheme: bearer
       bearerFormat: JWT
       type: http
-      name: Authorization
-      in: header
   schemas:
     PageQueryDto:
       type: object
@@ -810,17 +843,20 @@ components:
           type: number
           minimum: 1
           default: 1
+          example: 2
         page_size:
           type: number
           minimum: 1
           maximum: 1000
           default: 100
+          example: 100
     Href:
       type: object
       properties:
         href:
           type: string
           format: url
+          example: https://api-eu.vonage.com/v0.1/bulk/lists?page=5&page_size=10
       required:
         - href
     HalLinks:
@@ -845,16 +881,20 @@ components:
         total_items:
           type: number
           readOnly: true
+          example: 10000
         total_pages:
           type: number
           readOnly: true
+          example: 50
         page:
           type: number
           readOnly: true
           minimum: 1
+          example: 2
         page_size:
           type: number
           readOnly: true
+          example: 250
         _links:
           readOnly: true
           type: array
@@ -877,6 +917,7 @@ components:
         name:
           type: string
           maxLength: 50
+          example: first_name
         alias:
           type: string
           maxLength: 50
@@ -892,16 +933,21 @@ components:
           type: string
           readOnly: true
           format: uuid
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
         created_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         updated_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         name:
           type: string
+          maxLength: 50
+          example: Recipients for demo
         description:
           type: string
           maxLength: 1024
@@ -920,6 +966,7 @@ components:
         items_count:
           type: number
           readOnly: true
+          example: 10000
         datasource:
           discriminator:
             propertyName: type
@@ -937,12 +984,14 @@ components:
             - stopped
             - completed
             - failed
+          example: configured
         type:
           type: string
           readOnly: true
           enum:
             - salesforce
             - manual
+          example: salesforce
       required:
         - id
         - created_at
@@ -956,6 +1005,8 @@ components:
       properties:
         name:
           type: string
+          maxLength: 50
+          example: Recipients for demo
         description:
           type: string
           maxLength: 1024
@@ -982,6 +1033,7 @@ components:
           enum:
             - salesforce
             - manual
+          example: salesforce
       required:
         - name
         - type
@@ -990,6 +1042,8 @@ components:
       properties:
         name:
           type: string
+          maxLength: 50
+          example: Recipients for demo
         description:
           type: string
           maxLength: 1024
@@ -1016,6 +1070,7 @@ components:
           enum:
             - salesforce
             - manual
+          example: salesforce
     ListDatasourceBaseDto:
       type: object
       properties:
@@ -1024,6 +1079,7 @@ components:
           default: salesforce
           enum:
             - salesforce
+          example: salesforce
       required:
         - type
     SalesforceDatasource:
@@ -1034,10 +1090,13 @@ components:
           default: salesforce
           enum:
             - salesforce
+          example: salesforce
         integration_id:
           type: string
+          example: salesforce_credentials
         soql:
           type: string
+          example: select Id, LastName, FirstName, Phone, Email FROM Contact
       required:
         - type
         - integration_id
@@ -1049,23 +1108,31 @@ components:
           type: string
           readOnly: true
           format: uuid
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
         created_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         updated_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         list_id:
           type: string
           readOnly: true
           format: uuid
+          example: 92cc64e5-f62b-464f-ab9c-4376bd05adfc
         data:
           type: object
           additionalProperties: true
           minProperties: 1
           maxProperties: 20
+          example:
+            firstName: Adrianna
+            lastName: Renner
+            number: 715-268-2905
       required:
         - id
         - created_at
@@ -1089,6 +1156,10 @@ components:
           additionalProperties: true
           minProperties: 1
           maxProperties: 20
+          example:
+            firstName: Adrianna
+            lastName: Renner
+            number: 715-268-2905
       required:
         - data
     UpdateListItemDto:
@@ -1099,6 +1170,10 @@ components:
           additionalProperties: true
           minProperties: 1
           maxProperties: 20
+          example:
+            firstName: Adrianna
+            lastName: Renner
+            number: 715-268-2905
     ActionParameterDefinitionDto:
       type: object
       properties:
@@ -1108,11 +1183,14 @@ components:
             - string
             - secret
           default: string
+          example: string
         name:
           type: string
+          example: from
         required:
           type: boolean
           default: true
+          example: true
         default:
           type: string
       required:
@@ -1124,6 +1202,7 @@ components:
       properties:
         name:
           type: string
+          example: send-sms
         parameters:
           type: array
           items:
@@ -1133,6 +1212,10 @@ components:
             propertyName: type
           oneOf:
             - $ref: '#/components/schemas/HttpApiInvokeDto'
+          example:
+            type: http-api-invoke
+            url: https://api.nexmo.com/v1/messages
+            method: post
         timeout_seconds:
           type: number
           default: 5
@@ -1146,8 +1229,10 @@ components:
       properties:
         name:
           type: string
+          example: from_number
         value:
           type: string
+          example: 715-268-2905
       required:
         - name
         - value
@@ -1157,6 +1242,8 @@ components:
         codes:
           default:
             - '200'
+          example:
+            - 200
           type: array
           items:
             type: string
@@ -1169,6 +1256,7 @@ components:
           type: string
         details:
           type: string
+          example: failed to run
       required:
         - details
     ActionHttpResponseDto:
@@ -1186,9 +1274,11 @@ components:
         values:
           minItems: 1
           maxItems: 10
+          example:
+            - '202'
           type: array
           items:
-            type: array
+            type: string
       required:
         - values
     ActionHttpAsyncErrorStatusDto:
@@ -1197,11 +1287,14 @@ components:
         values:
           minItems: 1
           maxItems: 10
+          example:
+            - '202'
           type: array
           items:
-            type: array
+            type: string
         details:
           type: string
+          example: '{{ event.error.details }}'
       required:
         - values
         - details
@@ -1210,8 +1303,11 @@ components:
       properties:
         value:
           type: string
+          example: '200'
         success:
-          $ref: '#/components/schemas/ActionHttpAsyncStatusValuesDto'
+          example: '200'
+          allOf:
+            - $ref: '#/components/schemas/ActionHttpAsyncStatusValuesDto'
         error:
           $ref: '#/components/schemas/ActionHttpAsyncErrorStatusDto'
         info:
@@ -1224,8 +1320,22 @@ components:
       properties:
         invocation_id:
           type: string
+          example: '{{ event.reqId }}'
         status:
-          $ref: '#/components/schemas/ActionHttpAsyncStatusDto'
+          example:
+            success:
+              values:
+                - ok
+            error:
+              values:
+                - failed
+              details: '{{ event.error.details }}'
+            info:
+              values:
+                - submitted
+            value: '{{ event.status }}'
+          allOf:
+            - $ref: '#/components/schemas/ActionHttpAsyncStatusDto'
       required:
         - invocation_id
         - status
@@ -1237,11 +1347,14 @@ components:
           default: http-api-invoke
           enum:
             - http-api-invoke
+          example: http-api-invoke
         url:
           type: string
+          example: https://api.nexmo.com/v1/messages
         method:
           type: string
           default: post
+          example: post
         headers:
           type: array
           items:
@@ -1263,16 +1376,20 @@ components:
           type: string
           readOnly: true
           format: uuid
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
         created_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         updated_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         name:
           type: string
+          example: send-sms
         parameters:
           type: array
           items:
@@ -1282,6 +1399,10 @@ components:
             propertyName: type
           oneOf:
             - $ref: '#/components/schemas/HttpApiInvokeDto'
+          example:
+            type: http-api-invoke
+            url: https://api.nexmo.com/v1/messages
+            method: post
         timeout_seconds:
           type: number
           default: 5
@@ -1298,6 +1419,7 @@ components:
       properties:
         name:
           type: string
+          example: send-sms
         parameters:
           type: array
           items:
@@ -1307,6 +1429,10 @@ components:
             propertyName: type
           oneOf:
             - $ref: '#/components/schemas/HttpApiInvokeDto'
+          example:
+            type: http-api-invoke
+            url: https://api.nexmo.com/v1/messages
+            method: post
         timeout_seconds:
           type: number
           default: 5
@@ -1323,6 +1449,7 @@ components:
           type: string
           enum:
             - list
+          example: list
       required:
         - id
         - type
@@ -1332,6 +1459,9 @@ components:
         include:
           minItems: 1
           maxItems: 10
+          example:
+            - type: list
+              id: 42a5313b-ea90-4166-a950-00eb6f95dfef
           type: array
           items:
             $ref: '#/components/schemas/ListRefDto'
@@ -1349,6 +1479,7 @@ components:
         expression:
           type: object
           maxLength: 256
+          example: item.salary > 5000
       required:
         - expression
     ActionRefDto:
@@ -1362,6 +1493,7 @@ components:
           type: string
           enum:
             - action
+          example: action
       required:
         - id
         - type
@@ -1369,7 +1501,11 @@ components:
       type: object
       properties:
         action_ref:
-          $ref: '#/components/schemas/ActionRefDto'
+          example:
+            type: action
+            id: 20990a7c-db17-4e20-b485-ef9e1fd02f23
+          allOf:
+            - $ref: '#/components/schemas/ActionRefDto'
         parameters:
           maxItems: 20
           type: array
@@ -1387,6 +1523,7 @@ components:
           type: object
           maxLength: 8112
           default: ''
+          example: Hello {{ item.firstName }} {{ item.lastName }}
         encoding:
           type: string
           default: utf8
@@ -1399,6 +1536,7 @@ components:
       properties:
         correlation_id:
           type: string
+          example: '{{event.from}}'
       required:
         - correlation_id
     SegmentationDto:
@@ -1464,6 +1602,7 @@ components:
           default: segmentation-job
           enum:
             - segmentation-job
+          example: segmentation-job
         recipients:
           $ref: '#/components/schemas/RecipientsDto'
         segmentations:
@@ -1483,16 +1622,20 @@ components:
           type: string
           readOnly: true
           format: uuid
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
         created_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         updated_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         name:
           type: string
+          example: Greeting all
         tags:
           minItems: 0
           maxItems: 30
@@ -1504,6 +1647,24 @@ components:
             propertyName: type
           oneOf:
             - $ref: '#/components/schemas/SegmentationJobDefinitionDto'
+          example:
+            name: text vip customers
+            description: text UK and USA vip customers
+            recipient:
+              correlation_id: '{{item.number}}'
+            condition:
+              expression: item.salary == 1000 || ['UK', 'USA'].includes(item.country)
+            action_call:
+              action_ref:
+                id: '{{sendSmsActionId}}'
+                type: action
+              parameters:
+                - name: fromNumber
+                  value: '{{my_campaign_number}}'
+                - name: toNumber
+                  value: '{{ item.number }}'
+                - name: message
+                  value: '{{ template.message }}'
       required:
         - id
         - created_at
@@ -1515,6 +1676,7 @@ components:
       properties:
         name:
           type: string
+          example: Greeting all
         tags:
           minItems: 0
           maxItems: 30
@@ -1526,6 +1688,24 @@ components:
             propertyName: type
           oneOf:
             - $ref: '#/components/schemas/SegmentationJobDefinitionDto'
+          example:
+            name: text vip customers
+            description: text UK and USA vip customers
+            recipient:
+              correlation_id: '{{item.number}}'
+            condition:
+              expression: item.salary == 1000 || ['UK', 'USA'].includes(item.country)
+            action_call:
+              action_ref:
+                id: '{{sendSmsActionId}}'
+                type: action
+              parameters:
+                - name: fromNumber
+                  value: '{{my_campaign_number}}'
+                - name: toNumber
+                  value: '{{ item.number }}'
+                - name: message
+                  value: '{{ template.message }}'
       required:
         - name
         - definition
@@ -1534,6 +1714,7 @@ components:
       properties:
         name:
           type: string
+          example: Greeting all
         tags:
           minItems: 0
           maxItems: 30
@@ -1545,12 +1726,31 @@ components:
             propertyName: type
           oneOf:
             - $ref: '#/components/schemas/SegmentationJobDefinitionDto'
+          example:
+            name: text vip customers
+            description: text UK and USA vip customers
+            recipient:
+              correlation_id: '{{item.number}}'
+            condition:
+              expression: item.salary == 1000 || ['UK', 'USA'].includes(item.country)
+            action_call:
+              action_ref:
+                id: '{{sendSmsActionId}}'
+                type: action
+              parameters:
+                - name: fromNumber
+                  value: '{{my_campaign_number}}'
+                - name: toNumber
+                  value: '{{ item.number }}'
+                - name: message
+                  value: '{{ template.message }}'
     ActionCallSucceededEvent:
       type: object
       properties:
         id:
           type: string
           format: uuid
+          example: 92cc64e5-f62b-464f-ab9c-4376bd05adfc
         event_type:
           type: string
           enum:
@@ -1560,25 +1760,37 @@ components:
             - recipient-response
             - run-item-skipped
             - run-item-failed
+          example: action-call-succeeded
           readOnly: true
         src_ctx:
           type: string
+          example: uk recipient
         occurred_at:
           format: date-time
           type: string
+          example: '2022-06-19T20:41:59.085Z'
         event_data:
           type: object
+          example:
+            city: North Assunta
+            country: Iceland
+            state: PH
         job_id:
           type: string
+          example: 1e46e0c5-709a-42ea-8e65-98b4bc604269
         job_run_id:
           type: string
+          example: ce7b9294-0325-4a7a-b4c7-0b9ba531e27e
         recipient_id:
           type: object
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
         action_id:
           type: string
           readOnly: true
+          example: 125478b5-ef63-46e3-85d9-fdbee42c9242
         invocation_id:
           type: string
+          example: 907cbc63-08de-4238-8fc9-8f9d67815d1b
       required:
         - id
         - event_type
@@ -1595,6 +1807,7 @@ components:
         id:
           type: string
           format: uuid
+          example: 92cc64e5-f62b-464f-ab9c-4376bd05adfc
         event_type:
           type: string
           enum:
@@ -1604,19 +1817,29 @@ components:
             - recipient-response
             - run-item-skipped
             - run-item-failed
+          example: action-call-succeeded
         src_ctx:
           type: string
+          example: uk recipient
         occurred_at:
           format: date-time
           type: string
+          example: '2022-06-19T20:41:59.085Z'
         event_data:
           type: object
+          example:
+            city: North Assunta
+            country: Iceland
+            state: PH
         job_id:
           type: string
+          example: 1e46e0c5-709a-42ea-8e65-98b4bc604269
         job_run_id:
           type: string
+          example: ce7b9294-0325-4a7a-b4c7-0b9ba531e27e
         recipient_id:
           type: object
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
       required:
         - id
         - event_type
@@ -1632,14 +1855,17 @@ components:
         name:
           type: string
           readOnly: true
+          example: recipient-response
         statistics:
           type: string
           readOnly: true
           enum:
             - recipient-distinct-count
+          example: recipient-distinct-count
         value:
           type: number
           readOnly: true
+          example: 226
         occurred_at_min:
           format: date-time
           type: string
@@ -1658,6 +1884,7 @@ components:
         id:
           type: string
           format: uuid
+          example: 92cc64e5-f62b-464f-ab9c-4376bd05adfc
         event_type:
           type: string
           enum:
@@ -1667,25 +1894,37 @@ components:
             - recipient-response
             - run-item-skipped
             - run-item-failed
+          example: action-call-succeeded
           readOnly: true
         src_ctx:
           type: string
+          example: uk recipient
         occurred_at:
           format: date-time
           type: string
+          example: '2022-06-19T20:41:59.085Z'
         event_data:
           type: object
+          example:
+            city: North Assunta
+            country: Iceland
+            state: PH
         job_id:
           type: string
+          example: 1e46e0c5-709a-42ea-8e65-98b4bc604269
         job_run_id:
           type: string
+          example: ce7b9294-0325-4a7a-b4c7-0b9ba531e27e
         recipient_id:
           type: object
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
         action_id:
           type: string
           readOnly: true
+          example: a133c9e7-8cb8-4df9-a27f-b8e9065490da
         invocation_id:
           type: string
+          example: a54c7944-ba11-45af-a146-3f0c9887d5f9
       required:
         - id
         - event_type
@@ -1703,6 +1942,7 @@ components:
           type: string
         details:
           type: string
+          example: Not found
       required:
         - details
     ActionCallFailedEvent:
@@ -1711,6 +1951,7 @@ components:
         id:
           type: string
           format: uuid
+          example: 92cc64e5-f62b-464f-ab9c-4376bd05adfc
         event_type:
           type: string
           enum:
@@ -1720,25 +1961,37 @@ components:
             - recipient-response
             - run-item-skipped
             - run-item-failed
+          example: action-call-failed
           readOnly: true
         src_ctx:
           type: string
+          example: uk recipient
         occurred_at:
           format: date-time
           type: string
+          example: '2022-06-19T20:41:59.085Z'
         event_data:
           type: object
+          example:
+            city: North Assunta
+            country: Iceland
+            state: PH
         job_id:
           type: string
+          example: 1e46e0c5-709a-42ea-8e65-98b4bc604269
         job_run_id:
           type: string
+          example: ce7b9294-0325-4a7a-b4c7-0b9ba531e27e
         recipient_id:
           type: object
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
         action_id:
           type: string
           readOnly: true
+          example: a133c9e7-8cb8-4df9-a27f-b8e9065490da
         invocation_id:
           type: string
+          example: a54c7944-ba11-45af-a146-3f0c9887d5f9
         error:
           $ref: '#/components/schemas/EventErrorDto'
       required:
@@ -1756,15 +2009,19 @@ components:
       properties:
         name:
           type: string
+          example: holiday run
         start_at:
           format: date-time
           type: string
+          example: '2022-06-06T05:46:00.936Z'
         end_at:
           format: date-time
           type: string
+          example: '2022-06-20T05:46:00.936Z'
         job_id:
           type: string
           format: uuid
+          example: 06d5a6ed-cf02-4dbc-8694-164456f3f1c8
       required:
         - name
         - start_at
@@ -1777,25 +2034,32 @@ components:
           type: string
           readOnly: true
           format: uuid
+          example: 29192c4a-4058-49da-86c2-3e349d1065b7
         created_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         updated_at:
           format: date-time
           type: string
           readOnly: true
+          example: '2022-06-19T17:59:28.085Z'
         name:
           type: string
+          example: holiday run
         start_at:
           format: date-time
           type: string
+          example: '2022-06-06T05:46:00.936Z'
         end_at:
           format: date-time
           type: string
+          example: '2022-06-20T05:46:00.936Z'
         job_id:
           type: string
           format: uuid
+          example: 06d5a6ed-cf02-4dbc-8694-164456f3f1c8
         status:
           type: string
           readOnly: true
@@ -1807,6 +2071,7 @@ components:
             - failed
             - completed
             - draft
+          example: running
       required:
         - id
         - created_at
@@ -1822,13 +2087,21 @@ components:
         job_run_id:
           type: string
           readOnly: true
+          example: 42a5313b-ea90-4166-a950-00eb6f95dfef
         summary:
           readOnly: true
+          example:
+            - value: 3
+              name: action-call-succeeded
+              statistics: recipient-distinct-count
+              occurred_at_min: '2022-06-20T05:52:49.063Z'
+              occurred_at_max: '2022-06-20T05:52:49.099Z'
+            - value: 0
+              name: action-call-failed
+              statistics: recipient-distinct-count
           type: array
           items:
             $ref: '#/components/schemas/StatsRunSummaryDto'
       required:
         - job_run_id
         - summary
-security:
-  - bearerAuth: [ ]
