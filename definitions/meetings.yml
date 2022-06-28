@@ -118,6 +118,10 @@ paths:
                     expire_after_use:
                       type: boolean
                       description: 'Close the room after a session ends. Only relevant for long_term rooms.'
+                    theme_id:
+                      type: string
+                      format: uuid
+                      description: 'The theme id for the room'
        responses:
         '200':
           description: OK
@@ -714,6 +718,10 @@ components:
         is_available:
           type: boolean
           description: 'Once a room becomes unavailable, no new sessions can be created under it'
+        theme_id:
+          type: string
+          format: uuid
+          description: 'The theme id for the room'
         created_at:
           type: string
           format: date
@@ -765,6 +773,10 @@ components:
         expire_after_use:
           type: boolean
           description: 'Close the room after a session ends. Only relevant for long_term rooms.'
+        theme_id:
+          type: string
+          format: uuid
+          description: 'The theme id for the room'
     RecordingOptions:
       type: object
       properties:
