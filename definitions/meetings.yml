@@ -930,41 +930,39 @@ components:
     UploadUrlForTheme:
       type: object
       properties:
-        type: object
-        properties:
-          url:
-            type: string
-            description: Storage system URL
-            example: 'https://storage-url.com'
-          fields:
-            type: object
-            description: Fields property has to be part of the POST request's body
-            properties:
-              Content-Type:
-                type: string
-                example: 'image/png'
-              key:
-                type: string
-                example: 'auto-expiring-temp/logos/white/ca63a155-d5f0-4131-9903-c59907e53df0'
-                description: Logo's key in storage system
-              logoType:
-                type: string
-                enum: [white, colored, favicon]
-              bucket:
-                type: string
-                description: Bucket name to upload to
-              X-Amz-Algorithm:
-                type: string
-              X-Amz-Credential:
-                type: string
-              X-Amz-Date:
-                type: string
-              X-Amz-Security-Token:
-                type: string
-              Policy:
-                type: string
-              X-Amz-Signature:
-                type: string
+        url:
+          type: string
+          description: Storage system URL
+          example: 'https://storage-url.com'
+        fields:
+          type: object
+          description: Fields property has to be part of the POST request's body
+          properties:
+            Content-Type:
+              type: string
+              example: 'image/png'
+            key:
+              type: string
+              example: 'auto-expiring-temp/logos/white/ca63a155-d5f0-4131-9903-c59907e53df0'
+              description: Logo's key in storage system
+            logoType:
+              type: string
+              enum: [white, colored, favicon]
+            bucket:
+              type: string
+              description: Bucket name to upload to
+            X-Amz-Algorithm:
+              type: string
+            X-Amz-Credential:
+              type: string
+            X-Amz-Date:
+              type: string
+            X-Amz-Security-Token:
+              type: string
+            Policy:
+              type: string
+            X-Amz-Signature:
+              type: string
     Application:
       type: object
       properties:
