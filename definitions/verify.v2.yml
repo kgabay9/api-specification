@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Vonage Verify API (v2)
-  version: 0.0.11
+  version: 0.0.12
   description: Verify API provides a choice of routes for sending a code to a user. You can use this to confirm a user's contact information, as a second factor when authenticating users, or for step-up authentication.
   contact:
     name: Vonage DevRel
@@ -612,10 +612,6 @@ components:
         - instance
       type: object
       properties:
-        type:
-          type: string
-          description: URL to more information about this type of error
-          example: 'https://www.nexmo.com/messages/Errors#InvalidParams'
         title:
           type: string
           description: Information about the error
@@ -630,7 +626,6 @@ components:
           example: abcd
       example:
         invalid-parameters:
-          type: 'https://www.nexmo.com/messages/Errors#InvalidParams'
           title: 'Missing `workflow` parameter'
           detail: 'The `workflow` parameter is required and must be an array'
           instance: abcd
@@ -638,10 +633,6 @@ components:
     ErrorInvalidCodeRequest:
       type: object
       properties:
-        type:
-          type: string
-          example: "https://developer.nexmo.com/api-errors#bad-request"
-          description: URL link to the error code reference
         title:
           type: string
           example: "Invalid Code"
@@ -660,7 +651,7 @@ components:
       properties:
         type:
           type: string
-          example: "https://developer.nexmo.com/api-errors#not-found"
+          example: "https://developer.vonage.com/api-errors#not-found"
           description: URL link to the error code reference
         title:
           type: string
@@ -678,10 +669,6 @@ components:
     ErrorConflictRequest:
       type: object
       properties:
-        type:
-          type: string
-          example: "https://developer.nexmo.com/api-errors#conflict"
-          description: URL link to the error code reference
         title:
           type: string
           example: "Conflict"
@@ -698,10 +685,6 @@ components:
     ErrorExpiredRequest:
       type: object
       properties:
-        type:
-          type: string
-          example: "https://developer.nexmo.com/api-errors#conflict"
-          description: URL link to the error code reference
         title:
           type: string
           example: "Invalid Code"
@@ -730,13 +713,16 @@ components:
           type: string
           description: GUID reference for the instance
           example: 06032957-99ce-41ee-978b-9a390cd5a89b
-        type:
-          type: string
-          description: Link to error / remediation options
-          example: https://www.nexmo.com/messages/Errors#InvalidParams
         invalid_parameters:
           type: array
           description: Detailed array of errors``
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              reason:
+                type: string
           example:
             name: brand
             reason: Brand is required
@@ -749,10 +735,6 @@ components:
         - detail
         - instance
       properties:
-        type:
-          type: string
-          description: Link to error / remediation options
-          example: https://developer.vonage.com/api-errors/verify#rate-limit
         title:
           type: string
           description: Generic error message
