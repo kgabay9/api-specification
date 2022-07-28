@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Vonage Meetings Public API
-  version: 0.1.1
+  version: 0.1.2
   x-label: Beta
 servers:
   - url: https://api-eu.vonage.com/beta/meetings
@@ -789,6 +789,9 @@ components:
         auto_record:
           type: boolean
           description: Automatically record all sessions in this room. Recording cannot be stopped when this is set to `true`.
+        record_only_owner:
+          type: boolean
+          description: Record only the owner screen or any share screen of the video.
     Recording:
       type: object
       properties:
