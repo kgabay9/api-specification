@@ -1,0 +1,1001 @@
+openapi: 3.0.3
+x-stoplight:
+  id: dka9bkyfsi8b4
+info:
+  title: video
+  version: '0.2.0'
+  contact:
+    name: Vonage DevRel
+    url: 'https://developer.vonage.com'
+    email: devlre@vonage.com
+  description: APIs relating to Vonage Video
+servers:
+  - url: 'https://video.api.vonage.com'
+    description: Vonage Video
+paths:
+  /session/create:
+    parameters: []
+    post:
+      summary: Create New Session
+      operationId: session-create
+      responses:
+        '200':
+          $ref: '#/components/responses/New-Session'
+      description: Generate a new session.
+      requestBody:
+        $ref: '#/components/requestBodies/Create-Session'
+  '/v2/project/{application_id}/{session_id}/signal':
+    post:
+      summary: Send a signal to all particpants
+      operationId: post-user
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    code: 400
+                    message: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+              examples:
+                example-1:
+                  value:
+                    code: 400
+                    message: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '404':
+          description: The client specified by the connectionId property is not connected to the session.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    code: 400
+                    message: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+              examples:
+                example-1:
+                  value:
+                    code: 404
+                    message: The client specified by the connectionId property is not connected to the session.
+        '413':
+          description: 'The type string exceeds the maximum length (128 bytes), or the data string exceeds the maximum size (8 kB).'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    code: 400
+                    message: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+              examples:
+                example-1:
+                  value:
+                    code: 413
+                    message: 'The type string exceeds the maximum length (128 bytes), or the data string exceeds the maximum size (8 kB).'
+      description: Use the Signal REST API to send signals to all participants in an active OpenTok session or to a specific client connected to that session. Signals sent from the server have an empty from parameter in the signal received handlers on clients connected to the session. For a signal sent from a participant in the session, the from property is set the connection ID of the client that sent the signal, but in this case there is no associated connection.
+      requestBody:
+        $ref: '#/components/requestBodies/Signal'
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - $ref: '#/components/parameters/session_id'
+  '/v2/projects/{application_id}/session/{session_id}/connection/{connection_id}/signal':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - $ref: '#/components/parameters/session_id'
+      - name: connection_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Specific publisher connection ID
+    post:
+      summary: Send signal to a specific participant
+      operationId: post-v2-projects-application_id-session-session_id-connection-connect_id-signal
+      requestBody:
+        $ref: '#/components/requestBodies/Signal'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    code: 400
+                    message: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+              examples:
+                example-1:
+                  value:
+                    code: 400
+                    message: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '404':
+          description: The client specified by the connectionId property is not connected to the session.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    code: 400
+                    message: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+              examples:
+                example-1:
+                  value:
+                    code: 404
+                    message: The client specified by the connectionId property is not connected to the session.
+        '413':
+          description: 'The type string exceeds the maximum length (128 bytes), or the data string exceeds the maximum size (8 kB).'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    code: 400
+                    message: 'One of the signal properties — data, type, sessionId or connectionId — is invalid.'
+              examples:
+                example-1:
+                  value:
+                    code: 413
+                    message: 'The type string exceeds the maximum length (128 bytes), or the data string exceeds the maximum size (8 kB).'
+      description: Send signals to a specific participant in an active Vonage Video session
+  '/v2/projects/{application_id}/session/{session_id}/connection/{connection_id}':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - $ref: '#/components/parameters/session_id'
+      - $ref: '#/components/parameters/connection_id'
+    delete:
+      summary: Force a connection to disconnect
+      operationId: delete-v2-projects-application_id-session-session_id-connection-connection_id
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    code: 404
+                    message: Connection not found.
+              examples:
+                example-1:
+                  value:
+                    code: 400
+                    message: One of the arguments - sessionId or connectionId - is invalid
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    code: 404
+                    message: Connection not found.
+              examples:
+                example-1:
+                  value:
+                    code: 404
+                    message: Connection not found.
+      description: Force a client to disconnect from a session
+  '/v2/project/{application_id}/session/{session_id}/stream/{stream_id}':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - $ref: '#/components/parameters/session_id'
+      - $ref: '#/components/parameters/stream_id'
+    get:
+      summary: Get layout information about a stream
+      tags: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Stream-Layout'
+      operationId: get-v2-project-application_id-session-session_id-stream-stream_id
+      description: Get layout class information for a specific stream
+  '/v2/project/{application_id}/session/{session_id}/stream':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - $ref: '#/components/parameters/session_id'
+    get:
+      operationId: get-stream-layouts
+      summary: Get information about all connected stream layouts
+      tags: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Stream-Layout'
+      description: Get layout class information for a all streams in a session
+    put:
+      summary: Change the layout of a stream
+      operationId: put-v2-project-application_id-session-session_id-stream
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '500':
+          description: Internal Server Error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      layoutClassList:
+                        type: array
+                        items:
+                          type: string
+              x-examples:
+                example-1:
+                  items:
+                    - id: 8b732909-0a06-46a2-8ea8-074e64d43422
+                      layoutClassList:
+                        - full
+            examples:
+              example-1:
+                value:
+                  items:
+                    - id: 8b732909-0a06-46a2-8ea8-074e64d43422
+                      layoutClassList:
+                        - full
+  '/v2/project/{application_id}/session/{session_id}/stream/{stream_id}/mute':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - $ref: '#/components/parameters/session_id'
+      - $ref: '#/components/parameters/stream_id'
+    post:
+      summary: Mute a specific stream
+      operationId: post-v2-project-application_id-session-session_id-stream-stream_id-mute
+      responses:
+        '200':
+          $ref: '#/components/responses/Project-Details'
+        '400':
+          description: Bad Request
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      description: Force mute a specific publisher stream
+  '/v2/project/{application_id}/session/{session_id}/mute':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - $ref: '#/components/parameters/session_id'
+    post:
+      summary: Mute multiple participants in a session
+      operationId: mute-multiple-participants
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      description: Force mute all streams in a session
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                excludedStreamIds:
+                  type: array
+                  items:
+                    type: string
+              x-examples:
+                example-1:
+                  active: true
+                  excludedStreamIds:
+                    - excludedStreamId1
+                    - excludedStreamId2
+            examples:
+              example-1:
+                value:
+                  active: true
+                  excludedStreamIds:
+                    - excludedStreamId1
+                    - excludedStreamId2
+  '/v2/project/{application_id}/archive':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+    get:
+      summary: List all archives in an application
+      operationId: get-v2-project-application_id-archive
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        createdAt:
+                          type: integer
+                        duration:
+                          type: integer
+                        hasAudio:
+                          type: boolean
+                        hasVideo:
+                          type: boolean
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        projectId:
+                          type: integer
+                        reason:
+                          type: string
+                        resolution:
+                          type: string
+                        sessionId:
+                          type: string
+                        size:
+                          type: integer
+                        status:
+                          type: string
+                        streamMode:
+                          type: string
+                        streams:
+                          type: array
+                          items:
+                            type: object
+                            properties: {}
+                        url:
+                          type: string
+                x-examples:
+                  example-1:
+                    count: 2
+                    items:
+                      - createdAt: 1384221730000
+                        duration: 5049
+                        hasAudio: true
+                        hasVideo: true
+                        id: b40ef09b-3811-4726-b508-e41a0f96c68f
+                        name: Foo
+                        projectId: 123456
+                        reason: ''
+                        resolution: 640x480
+                        sessionId: 2_MX40NzIwMzJ-flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN-MC45NDQ2MzE2NH4
+                        size: 247748791
+                        status: available
+                        streamMode: manual
+                        streams: []
+                        url: 'https://tokbox.com.archive2.s3.amazonaws.com/123456/09141e29-8770-439b-b180-337d7e637545/archive.mp4'
+                      - createdAt: 1384221380000
+                        duration: 328
+                        hasAudio: true
+                        hasVideo: true
+                        id: b40ef09b-3811-4726-b508-e41a0f96c68f
+                        name: Foo
+                        projectId: 123456
+                        reason: ''
+                        resolution: 640x480
+                        sessionId: 2_MX40NzIwMzJ-flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN-MC45NDQ2MzE2NH4
+                        size: 18023312
+                        status: available
+                        streamMode: auto
+                        streams: []
+                        url: 'https://tokbox.com.archive2.s3.amazonaws.com/123456/b40ef09b-3811-4726-b508-e41a0f96c68f/archive.mp4'
+              examples:
+                example-1:
+                  value:
+                    count: 2
+                    items:
+                      - createdAt: 1384221730000
+                        duration: 5049
+                        hasAudio: true
+                        hasVideo: true
+                        id: b40ef09b-3811-4726-b508-e41a0f96c68f
+                        name: Foo
+                        projectId: 123456
+                        reason: ''
+                        resolution: 640x480
+                        sessionId: 2_MX40NzIwMzJ-flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN-MC45NDQ2MzE2NH4
+                        size: 247748791
+                        status: available
+                        streamMode: manual
+                        streams: []
+                        url: 'https://tokbox.com.archive2.s3.amazonaws.com/123456/09141e29-8770-439b-b180-337d7e637545/archive.mp4'
+                      - createdAt: 1384221380000
+                        duration: 328
+                        hasAudio: true
+                        hasVideo: true
+                        id: b40ef09b-3811-4726-b508-e41a0f96c68f
+                        name: Foo
+                        projectId: 123456
+                        reason: ''
+                        resolution: 640x480
+                        sessionId: 2_MX40NzIwMzJ-flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN-MC45NDQ2MzE2NH4
+                        size: 18023312
+                        status: available
+                        streamMode: auto
+                        streams: []
+                        url: 'https://tokbox.com.archive2.s3.amazonaws.com/123456/b40ef09b-3811-4726-b508-e41a0f96c68f/archive.mp4'
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '500':
+          description: Internal Server Error
+      description: List all archives in an application
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: offset
+          description: Index offset of the first archive. 0 is the most recent archive
+        - schema:
+            type: integer
+          in: query
+          name: count
+          description: Limit of the number of archives to return
+        - schema:
+            type: string
+          in: query
+          name: session_id
+          description: Limit archives to a specific session ID
+    post:
+      summary: Create a new archive
+      operationId: post-v2-project-application_id-archive
+      responses:
+        '200':
+          $ref: '#/components/responses/Archive-Details'
+      description: Create a new archive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: string
+                hasAudio:
+                  type: boolean
+                hasVideo:
+                  type: boolean
+                layout:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    stylesheet:
+                      type: string
+                    screenshareType:
+                      type: string
+                name:
+                  type: string
+                outputMode:
+                  type: string
+                resolution:
+                  type: string
+                streamMode:
+                  type: string
+              x-examples:
+                example-1:
+                  sessionId: session_id
+                  hasAudio: true
+                  hasVideo: true
+                  layout:
+                    type: custom
+                    stylesheet: the layout stylesheet (only used with type == custom)
+                    screenshareType: the layout type to use when there is a screen-sharing stream (optional)
+                  name: archive_name
+                  outputMode: composed
+                  resolution: 640x480
+                  streamMode: auto
+            examples:
+              example-1:
+                value:
+                  sessionId: session_id
+                  hasAudio: true
+                  hasVideo: true
+                  layout:
+                    type: custom
+                    stylesheet: the layout stylesheet (only used with type == custom)
+                    screenshareType: the layout type to use when there is a screen-sharing stream (optional)
+                  name: archive_name
+                  outputMode: composed
+                  resolution: 640x480
+                  streamMode: auto
+  '/v2/project/{application_id}/archive/{archive_id}':
+    parameters:
+      - schema:
+          type: string
+        name: application_id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: archive_id
+        in: path
+        required: true
+    get:
+      operationId: get-archive-information
+      summary: Return archive information for specific archive
+      responses:
+        '200':
+          $ref: '#/components/responses/Archive-Details'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+      description: List all archives in an application
+    delete:
+      summary: Delete an archive
+      operationId: delete-v2-project-application_id-archive-archive_id
+      responses:
+        '204':
+          description: No Content
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+      description: Delete an archive
+  '/v2/project/{application_id}/archive/{archive_id}/streams':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - schema:
+          type: string
+        name: archive_id
+        in: path
+        required: true
+    patch:
+      summary: Add or remove a stream from an archive
+      operationId: patch-v2-project-application_id-archive-archive_id-streams
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '404':
+          description: Not Found
+        '405':
+          description: Method Not Allowed
+        '500':
+          description: Internal Server Error
+      # requestBody:
+      #   content:
+      #     application/json:
+      #       schema:
+      #         oneOf:
+      #           - $ref: '#/components/schemas/Remove-Stream-From-Archive'
+      #           - $ref: '#/components/schemas/Add-Stream-To-Archive'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Add-Stream-To-Archive'
+
+  '/v2/project/{application_id}/archive/{archive_id}/stop':
+    parameters:
+      - schema:
+          type: string
+        name: application_id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: archive_id
+        in: path
+        required: true
+    post:
+      operationId: stop-archive
+      summary: Stop an archive
+      responses:
+        '200':
+          $ref: '#/components/responses/Archive-Details'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+  '/v2/project/{application_id}/archive/{archive_id}/layout':
+    parameters:
+      - $ref: '#/components/parameters/application_id'
+      - schema:
+          type: string
+        name: archive_id
+        in: path
+        required: true
+    put:
+      summary: Change the layout of an archive
+      operationId: put-v2-project-application_id-archive-archive_id-layout
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '403':
+          $ref: '#/components/responses/Invalid-Credentials'
+        '500':
+          description: Internal Server Error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                screenshareType:
+                  type: string
+                stylesheet:
+                  type: string
+              x-examples:
+                example-1:
+                  type: custom
+                  screenshareType: optional layout type to use when there is a screen-sharing stream
+                  stylesheet: the layout stylesheet (only used with type == custom)
+            examples:
+              example-1:
+                value:
+                  type: custom
+                  screenshareType: optional layout type to use when there is a screen-sharing stream
+                  stylesheet: the layout stylesheet (only used with type == custom)
+components:
+  schemas:
+    Add-Stream-To-Archive:
+      type: object
+      properties:
+        addStream:
+          type: string
+        hasAudio:
+          type: boolean
+        hasVideo:
+          type: boolean
+    Remove-Stream-From-Archive:
+      type: object
+      properties:
+        removeStream:
+          type: string
+  securitySchemes:
+    Vonage JWT:
+      type: http
+      scheme: bearer
+  responses:
+    New-Session:
+      description: Sample Response when creating a new session
+      content:
+        application/json:
+          schema:
+            type: array
+            x-examples:
+              example-1:
+                - session_id: the session ID
+                  project_id: your OpenTok API key
+                  create_dt: The creation date
+                  media_server_url: The URL of the OpenTok media router used by the session -- ignore this
+            items:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                application_id:
+                  type: string
+                create_dt:
+                  type: string
+                media_server_url:
+                  type: string
+          examples:
+            example-1:
+              value:
+                - session_id: the session ID
+                  project_id: your Vonage Application ID
+                  create_dt: The creation date
+                  media_server_url: The URL of the Vonage media router used by the session -- ignore this
+    Invalid-Credentials:
+      description: Invalid credentials
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string
+          examples:
+            example-1:
+              value:
+                code: 404
+                message: 'You are not authorized to forceDisconnect, check your authentication credentials.'
+    Stream-Layout:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              videoType:
+                type: string
+              name:
+                type: string
+              layoutClassList:
+                type: array
+                items:
+                  type: string
+            x-examples:
+              example-1:
+                id: '8b732909-0a06-46a2-8ea8-074e64d43422'
+                videoType: camera
+                name: ''
+                layoutClassList:
+                  - full
+          examples:
+            example-1:
+              value:
+                id: '8b732909-0a06-46a2-8ea8-074e64d43422'
+                videoType: camera
+                name: ''
+                layoutClassList:
+                  - full
+    Project-Details:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              secret:
+                type: string
+              status:
+                type: string
+              name:
+                type: string
+              environment:
+                type: string
+              createdAt:
+                type: integer
+            x-examples:
+              example-1:
+                id: '12312'
+                secret: '567890'
+                status: ACTIVE
+                name: Joe Montana
+                environment: standard
+                createdAt: 1414642898000
+          examples:
+            example-1:
+              value:
+                id: '12312'
+                secret: '567890'
+                status: ACTIVE
+                name: Joe Montana
+                environment: standard
+                createdAt: 1414642898000
+    Archive-Details:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              createdAt:
+                type: integer
+              duration:
+                type: integer
+              hasAudio:
+                type: boolean
+              hasVideo:
+                type: boolean
+              id:
+                type: string
+              name:
+                type: string
+              outputMode:
+                type: string
+              projectId:
+                type: integer
+              reason:
+                type: string
+              resolution:
+                type: string
+              sessionId:
+                type: string
+              size:
+                type: integer
+              status:
+                type: string
+              streamMode:
+                type: string
+              url:
+                type: string
+            x-examples:
+              example-1:
+                createdAt: 1384221730555
+                duration: 0
+                hasAudio: true
+                hasVideo: true
+                id: b40ef09b-3811-4726-b508-e41a0f96c68f
+                name: The archive name you supplied
+                outputMode: composed
+                projectId: 234567
+                reason: ''
+                resolution: 640x480
+                sessionId: flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN
+                size: 0
+                status: started
+                streamMode: auto
+                url: null
+          examples:
+            example-1:
+              value:
+                createdAt: 1384221730555
+                duration: 0
+                hasAudio: true
+                hasVideo: true
+                id: b40ef09b-3811-4726-b508-e41a0f96c68f
+                name: The archive name you supplied
+                outputMode: composed
+                projectId: 234567
+                reason: ''
+                resolution: 640x480
+                sessionId: flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN
+                size: 0
+                status: started
+                streamMode: auto
+                url: null
+  requestBodies:
+    Create-Session:
+      content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                archiveMode:
+                  type: string
+                  description: Set to always to have the session archived automatically. With the archiveModeset to manual (the default), you can archive the session by calling the REST /archive POST method. If you set the archiveMode to always, you must also set the p2p.preference parameter to disabled (the default). 
+                location:
+                  type: string
+                  description: The IP address that the Vonage Video APi will use to situate the session in its global network. If no location hint is passed in (which is recommended), the session uses a media server based on the location of the first client connecting to the session. Pass a location hint in only if you know the general geographic region (and a representative IP address) and you think the first client connecting may not be in that region. Specify an IP address that is representative of the geographical location for the session.
+                p2p.preference:
+                  type: string
+                  description: Set to enabled if you prefer clients to attempt to send audio-video streams directly to other clients; set to disabled for sessions that use the OpenTok Media Router. (Optional; the default setting is disabled -- the session uses the OpenTok Media Router.) 
+            examples:
+              example-1:
+                value: archiveMode=always
+    Signal:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+              data:
+                type: string
+            x-examples:
+              example-1:
+                type: chat
+                data: Text of the message
+          examples:
+            example-1:
+              value:
+                type: chat
+                data: Text of the message
+  parameters:
+    application_id:
+      name: application_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Vonage Application UUID
+    session_id:
+      name: session_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Video session ID
+    connection_id:
+      name: connection_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Specific publisher connection ID
+    stream_id:
+      name: stream_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Stream ID
+    archive_id:
+      name: archive_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Archive UUID to use
+security:
+  - Vonage JWT: []
