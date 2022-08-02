@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  version: 1.0.3
+  version: 1.0.4
   title: 10DLC Brand and Campaign Provisioning
   contact:
     name: Vonage
@@ -210,7 +210,7 @@ paths:
           $ref: "common/common_errors.yml#/components/responses/NotFoundError"
         "422":
           $ref: "#/components/responses/ErrorVettingParameters"
-        
+
     post:
       tags:
         - Brands
@@ -580,33 +580,21 @@ components:
         message_flow: "string"
         help_message: "string"
         mno_metadata:
-          - network_id: "10017"
-            min_msg_samples: 1,
-            msg_class: A
-            req_subscriber_opt_out: false
-            mno_review: false,
-            no_embedded_phone: true,
-            mno: "AT&T"
-            tpm: 3000
-            req_subscriber_help: false
-            req_subscriber_opt_in: true
-            mno_support: true
-            no_embedded_link: true
-            qualify: true
-            status: "APPROVED"
-          - network_id: "10035"
-            min_msg_samples: 1,
-            req_subscriber_help: false
-            req_subscriber_opt_out: false
-            req_subscriber_opt_in: true
-            mno_review: false
-            mno_support: true
-            no_embedded_phone: true,
-            no_embedded_link: true
-            qualify: true
-            brand_tier: "LOW"
-            mno: "TMO"
-            status: "APPROVED"
+          status: "APPROVED"
+          network_id: "10017"
+          min_msg_samples: 1
+          msg_class: A
+          req_subscriber_opt_out: false
+          mno_review: false,
+          no_embedded_phone: true
+          mno: "AT&T"
+          tpm: 3000
+          req_subscriber_help: false
+          req_subscriber_opt_in: true
+          mno_support: true
+          no_embedded_link: true
+          qualify: true
+          brand_tier: "LOW"
         auto_renewal: true
         status: "ACTIVE"
         _links:
@@ -1253,29 +1241,7 @@ components:
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/CampaignResponse"
-              - type: object
-                properties:
-                  _links:
-                    type: object
-                    properties:
-                      self:
-                        type: object
-                        properties:
-                          href:
-                            type: string
-                            example: "https://api.nexmo.com/v1/10dlc/brands/BLQKOPK/campaigns/57b3a89e-c9fa-4860-aec2-ad7f51539dab"
-                      brand:
-                        type: object
-                        properties:
-                          href:
-                            type: string
-                            example: "https://api.nexmo.com/v1/10dlc/brands/BLQKOPK"
-          examples:
-            simple:
-              value:
-                $ref: "#/components/examples/Campaign/value"
+            $ref: "#/components/schemas/CampaignResponse"
 
     SingleNumberResponse:
       description: Return a single number in a campaign
@@ -2088,6 +2054,9 @@ components:
           maxLength: 2048
           example:
             $ref: "#/components/examples/Campaign/value/message_flow"
+        partner:
+          type: boolean
+          example: true
         help_message:
           type: string
           description: Help message of the campaign
@@ -2155,8 +2124,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/UseCaseMNOMetadata"
-          example:
-            $ref: "#/components/examples/Campaign/value/mno_metadata"
         status:
           type: string
           example:
@@ -2289,7 +2256,7 @@ components:
             - state
             - postal_code
             - country
-    
+
     CreateSoleProprietorBrand:
       allOf:
         - $ref: "#/components/schemas/BrandBase"
@@ -2360,6 +2327,7 @@ components:
         - REJECTED
         - APPROVED
         - SUSPENDED
+        - REGISTERED
 
     Number:
       description: Telephone Number
@@ -2434,7 +2402,7 @@ components:
         - phone
         - country
         - email
-       
+
     UpdatePrivateCompanyBrand:
       type: object
       properties:
@@ -2461,7 +2429,7 @@ components:
         - email
         - stock_symbol
         - stock_exchange
-            
+
     UpdateSoleProprietorBrand:
       type: object
       properties:
@@ -2475,7 +2443,7 @@ components:
         - phone
         - country
         - email
-        
+
     IdentityStatus:
       description: >-
         The 4 statuses are defined as follow:
@@ -2559,6 +2527,32 @@ components:
           type: integer
         tmo_brand_tier:
           type: string
+        status:
+          type: string
+          enum:
+            $ref: "#/components/schemas/MNOCampaignStatus/enum"
+          example: "APPROVED"
+        tmo_tpd:
+          type: integer
+          example: 0
+        att_number_based:
+          type: integer
+          example: 3000
+        complaints:
+          type: array
+          items:
+            type: object
+            properties:
+              description:
+                type: string
+              dca:
+                type: string
+                example: SINCH
+              created_at:
+                type: string
+                example: '2022-08-01T14:26:25.862Z'  
+
+          
 
     VettingRequest:
       type: object
@@ -2678,44 +2672,44 @@ tags:
     description: APIs relating to working with Campaigns
   - name: Numbers
     description: APIs relating to working with Numbers in Campaigns
-  
+
 x-errors:
   brand-conflict:
     description: A conflict when a brand is being created or edited and there is an issue with a 3rd party vendor.
     resolution: Ensure all required fields have values and there are no errors in those values. If the error persists, contact [support@vonage.com](support@vonage.com).
-  
+
   brand-parameters:
     description: There are errors in the brand data submitted.
     resolution: Ensure all required fields have values included and correct any errors to values in the specified fields.
-  
+
   invalid-usecase-data:
     description: There are errors in the data submitted for use case qualification.
     resolution: Ensure all required fields have values included and correct any errors to values in the specified fields.
-  
+
   use-case-denied:
     description: The use case requested has been denied for this brand.
     resolution: Ensure your use case does not require additional brand vetting or pre/post Mobile Network Operator approval.
-  
+
   vetting-conflict:
     description: A conflict during the brand vetting request has occurred.
     resolution: If the error persists, contact [support@vonage.com](mailto:support@vonage.com).
-  
+
   invalid-vetting-data:
     description: There are errors in the vetting request data submitted.
     resolution: Ensure all required fields have values and correct any errors to values in the specified fields.
-  
+
   invalid-json:
     description: Your request cannot be parsed.
     resolution: Ensure there are no invalid characters or values in your request.
-  
+
   brand-not-qualified:
     description: A conflict when a campaign is being created under a brand that hasn't qualified for the specified use case.
     resolution: Verify the brand use case qualifies before submitting the campaign.
-  
+
   invalid-campaign-data:
     description: There are errors in the campaign data submitted.
     resolution: Ensure all required fields have values and correct any errors to values in the specified fields.
-  
+
   numbers-already-linked:
     description: The number you are attempting to link is already linked to another campaign.
     resolution: You must link a unique number to a campaign. Link a different number to this campaign.
