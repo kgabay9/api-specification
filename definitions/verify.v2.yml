@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Vonage Verify API (v2)
-  version: 0.0.12
+  version: 0.0.13
   description: Verify API provides a choice of routes for sending a code to a user. You can use this to confirm a user's contact information, as a second factor when authenticating users, or for step-up authentication.
   contact:
     name: Vonage DevRel
@@ -249,6 +249,7 @@ components:
         - $ref: '#/components/schemas/NewCodeRequestWorkflowSMS'
         - $ref: '#/components/schemas/NewCodeRequestWorkflowWhatsApp'
         - $ref: '#/components/schemas/NewCodeRequestWorkflowWhatsAppInteractive'
+        - $ref: '#/components/schemas/NewCodeRequestWorkflowVoice'
 
     NewCodeRequestWorkflowSMS:
       title: SMS
@@ -283,7 +284,41 @@ components:
                   "to": "447700900000"
                 }
               ]
-
+    
+    NewCodeRequestWorkflowVoice:
+      title: Voice
+      x-tab-id: WorkflowVoice
+      allOf:
+        - $ref: '#/components/schemas/NewRequestBase'
+        - type: object
+          required:
+            - workflow
+            - brand
+          description: Request a code be sent to a user
+          properties:
+            workflow:
+              type: array
+              items:
+                type: object
+                required:
+                  - channel
+                  - to
+                properties:
+                  channel:
+                    type: string
+                    description: "The channel"
+                    enum: 
+                      - voice
+                    example: "voice"
+                  to:
+                    $ref: '#/components/schemas/To'
+              example: [
+                {
+                  "channel": "voice",
+                  "to": "447700900000"
+                }
+              ]
+    
     NewCodeRequestWorkflowWhatsApp:
       title: WhatsApp
       x-tab-id: WorkflowWhatsApp
@@ -448,6 +483,7 @@ components:
         - request_id
         - submitted_at
         - status
+        - type
         - finalized_at
         - channel_timeout
         - workflow
