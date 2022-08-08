@@ -1,6 +1,6 @@
 openapi: "3.0.1"
 info:
-  version: 1.1.1
+  version: 1.2.0
   title: Messages API
   description: 'The Messages API consolidates and normalises exchanges across all messaging channels. It allows you to use a single API to interact with our various channels such as SMS, MMS, WhatsApp, Viber and Facebook Messenger'
   contact:
@@ -1430,6 +1430,39 @@ components:
                 - rejected
                 - undeliverable
                 - read
+            usage:
+              type: object
+              properties:
+                currency:
+                  type: string
+                  example: EUR
+                  description: The charge currency in ISO 4217 format.
+                  enum:
+                    - EUR
+                price:
+                  type: string
+                  example: '0.0333'
+                  description: The charge amount as a stringified number. For WhatsApp this is the default Vonage charge per conversation.
+            whatsapp:
+              type: object
+              description: An object contining meta-data related to the WhatsApp message that triggered this callback. Only present for callbacks with a `status` of `delivered`.
+              properties:
+                conversation:
+                  type: object
+                  description: An object contining data for the conversation to which the message relates.
+                  properties:
+                    id:
+                      type: string
+                      example: '1234567890'
+                      description: The id of the conversation.
+                    origin:
+                      type: object
+                      description: An object contining data related to the origin of the conversation.
+                      properties:
+                        type:
+                          type: string
+                          example: 'user_initiated'
+                          description: The conversation type.
     messageStatusMessenger:
       allOf:
         - $ref: "#/components/schemas/messageStatusBase"
