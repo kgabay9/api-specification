@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  version: 1.0.4
+  version: 1.0.5
   title: 10DLC Brand and Campaign Provisioning
   contact:
     name: Vonage
@@ -463,7 +463,39 @@ paths:
           $ref: "common/common_errors.yml#/components/responses/NotFoundError"
         "422":
           $ref: "#/components/responses/ErrorNumbersParameters"
-
+  /v1/10dlc/partnercampaigns/import:
+    post:
+      summary: Import a partner campaign to Vonage
+      description: >
+        Import a partner campaign by sharing it with Vonage. Your account needs
+        a special capability to be able to carry on with this operation.
+      tags:
+        - Campaigns
+      operationId: importPartnerCampaign
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account_id:
+                  $ref: '#/components/schemas/AccountID'
+                campaign_id:
+                  $ref: '#/components/schemas/CampaignId'
+                label:
+                  $ref: '#/components/schemas/CampaignLabel'
+              required:
+                - account_id
+                - campaign_id
+      responses:
+        '201':
+          $ref: '#/components/responses/ImportPartnerCampaignResponse'
+        '400':
+          $ref: '#/components/responses/ErrorGeneric'
+        '401':
+          $ref: 'common/common_errors.yml#/components/responses/BadCredentialsError'
+        '404':
+          $ref: 'common/common_errors.yml#/components/responses/NotFoundError'
   /v1/10dlc/enum/vetting/classes:
     get:
       tags:
@@ -662,6 +694,23 @@ components:
             att_msg_class: null
 
   responses:
+    ImportPartnerCampaignResponse:
+      description: Imported partner campaign summary
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              brand_id:
+                $ref: '#/components/schemas/BrandId'
+              campaign_id:
+                $ref: '#/components/schemas/CampaignId'
+              sharing_status:
+                $ref: '#/components/schemas/SharingStatus'
+              downstream_cnp_id:
+                $ref: '#/components/schemas/CnpID'
+              upstream_cnp_id:
+                $ref: '#/components/schemas/CnpID'
     ErrorCouldNotRemoveNumberResponse:
       description: Error response for number deletion errors
       content:
@@ -1479,6 +1528,27 @@ components:
               - vetting_class
 
   schemas:
+    CampaignLabel:
+      description: Friendly name associated with this campaign.
+      type: string
+      maxLength: 50
+    SharingStatus:
+      description: >-
+        Sharing Status. Please refer to the /enum endpoint for an update list of
+        valid values.
+      type: string
+      maxLength: 50
+      enum:
+        - PENDING
+        - ACCEPTED
+        - DECLINED
+    CnpID:
+      description: >-
+        CNP ID. Please refer to the /enum endpoint for an update list of valid
+        values.
+      type: string
+      maxLength: 50
+
     AccountID:
       description: The Vonage Account ID
       type: string
