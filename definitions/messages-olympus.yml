@@ -1,6 +1,6 @@
 openapi: "3.0.1"
 info:
-  version: 1.2.0
+  version: 1.2.1
   title: Messages API
   description: 'The Messages API consolidates and normalises exchanges across all messaging channels. It allows you to use a single API to interact with our various channels such as SMS, MMS, WhatsApp, Viber and Facebook Messenger'
   contact:
@@ -222,7 +222,6 @@ paths:
                           whatsapp:
                             type: object
                             required:
-                              - policy
                               - locale
                             properties:
                               policy:
@@ -230,11 +229,11 @@ paths:
                                 example: deterministic
                                 enum:
                                   - deterministic
-                                description: 'Policy for resolving what language template to use. Please note that WhatsApp deprecated the `fallback` policy in January of 2020, all requests carrying a `fallback` policy will be rejected with a 400 error. As of right now the only valid choice is `deterministic`'
+                                description: 'Policy for resolving what language template to use. As of right now the only valid choice is `deterministic`.'
                               locale:
                                 type: string
-                                example: en-US
-                                description: 'The [BCP 47](https://en.wikipedia.org/wiki/IETF_language_tag) language of the template. Vonage will translate the BCP 47 format to the [WhatsApp equivalent](https://developers.facebook.com/docs/whatsapp/message-templates/creation#translations). For examples `en-GB` will be auto-translate to en_GB.'
+                                example: en_US
+                                description: 'The [BCP 47](https://en.wikipedia.org/wiki/IETF_language_tag) language of the template. See [the WhatsApp documentation](https://developers.facebook.com/docs/whatsapp/api/messages/message-templates#supported-languages-) for supported languages.'
                     - allOf:
                       - required:
                         - message_type
@@ -565,13 +564,14 @@ components:
 
   schemas:
     TemplateParameters:
-      description: List of parameters to populate the template
-      type: object
-      properties:
-        key:
-          type: string
-          description: key/value pair.You can find the full list of supported parameters on WhatsApp's [messages parameters documentation] (https://developers.facebook.com/docs/whatsapp/on-premises/reference/messages#message-templates).
-          example: value
+      type: array
+      description: The parameters are an array of strings, with the first string being used for {{1}} in the template, with the second being {{2}} etc. Only required if the template specified by `name` contains parameters.
+      example:
+        - Verification
+        - '2526'
+        - '5'
+      items:
+        type: string
     Image:
       allOf:
         - $ref: "#/components/schemas/baseMessageType"
@@ -735,13 +735,10 @@ components:
               properties:
                 name:
                   type: string
-                  example: verify
+                  example: 9b6b4fcb_da19_4a26_8fe8_78074a91b584:verify
                   description: 'The name of the template. For WhatsApp use your WhatsApp namespace (available via Facebook Business Manager), followed by a colon : and the name of the template to use.'
                 parameters:
-                  type: array
-                  description: The parameters are an array of objects, with the first object being used for {{1}} in the template, with the second being {{2}} etc.
-                  items:
-                    $ref: "#/components/schemas/TemplateParameters"
+                  $ref: "#/components/schemas/TemplateParameters"
     Custom:
       allOf:
         - $ref: "#/components/schemas/baseMessageType"
