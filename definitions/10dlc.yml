@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  version: 1.0.5
+  version: 1.0.6
   title: 10DLC Brand and Campaign Provisioning
   contact:
     name: Vonage
@@ -612,7 +612,7 @@ components:
         message_flow: "string"
         help_message: "string"
         mno_metadata:
-          status: "APPROVED"
+          status: "REGISTERED"
           network_id: "10017"
           min_msg_samples: 1
           msg_class: A
@@ -2245,7 +2245,7 @@ components:
     CampaignStatus:
       description: Statuses that a campaign can be in
       type: string
-      example: APPROVED
+      example: ACTIVE
       enum:
         - ACTIVE
         - EXPIRED
@@ -2390,12 +2390,11 @@ components:
     MNOCampaignStatus:
       description: Statuses that a campaign has in relation to a specific MNO
       type: string
-      example: APPROVED
+      example: REGISTERED
       enum:
         - UNKNOWN
         - REVIEW
         - REJECTED
-        - APPROVED
         - SUSPENDED
         - REGISTERED
 
@@ -2601,7 +2600,7 @@ components:
           type: string
           enum:
             $ref: "#/components/schemas/MNOCampaignStatus/enum"
-          example: "APPROVED"
+          example: "REGISTERED"
         tmo_tpd:
           type: integer
           example: 0
