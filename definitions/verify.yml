@@ -3,7 +3,7 @@ servers:
   - url: "https://api.nexmo.com/verify"
 info:
   title: Verify API
-  version: 1.2.1
+  version: 1.2.2
   description: >-
     The Verify API helps you to implement 2FA (two-factor authentication) in your applications.
     This is useful for:
@@ -638,7 +638,10 @@ components:
           type: integer
           required:
             - "false"
-          description: Duration the unblock will be applied in seconds
+          minimum: 0
+          maximum: 86400
+          default: 3600
+          description: An optional duration the unblock will be applied for in seconds
           example: '3600'
 
     verifyRequest:
