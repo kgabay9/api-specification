@@ -1,6 +1,6 @@
 openapi: "3.0.1"
 info:
-  version: 1.2.1
+  version: 1.2.2
   title: Messages API
   description: 'The Messages API consolidates and normalises exchanges across all messaging channels. It allows you to use a single API to interact with our various channels such as SMS, MMS, WhatsApp, Viber and Facebook Messenger'
   contact:
@@ -31,6 +31,7 @@ paths:
                   oneOf:
                     - allOf:
                       - $ref: '#/components/schemas/Text'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           text:
                             description: |
@@ -41,6 +42,7 @@ paths:
                   oneOf:
                     - allOf:
                       - $ref: '#/components/schemas/Image'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           image:
                             required:
@@ -62,6 +64,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsMms'
                     - allOf:
                       - $ref: '#/components/schemas/vCard'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           vcard:
                             required:
@@ -77,6 +80,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsMms'
                     - allOf:
                       - $ref: '#/components/schemas/Audio'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           message_type:
                             type: string
@@ -105,6 +109,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsMms'
                     - allOf:
                       - $ref: '#/components/schemas/Video'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           message_type:
                             type: string
@@ -136,6 +141,7 @@ paths:
                   oneOf:
                     - allOf:
                       - $ref: '#/components/schemas/Text'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           text:
                             description: |
@@ -143,6 +149,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsWhatsapp'
                     - allOf:
                       - $ref: '#/components/schemas/Image'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           image:
                             required:
@@ -164,6 +171,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsWhatsapp'
                     - allOf:
                       - $ref: '#/components/schemas/Audio'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           audio:
                             required:
@@ -179,6 +187,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsWhatsapp'
                     - allOf:
                       - $ref: '#/components/schemas/Video'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           video:
                             required:
@@ -196,6 +205,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsWhatsapp'
                     - allOf:
                       - $ref: '#/components/schemas/File'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           file:
                             required:
@@ -218,6 +228,7 @@ paths:
                         - whatsapp
                       - $ref: '#/components/schemas/Template'
                       - $ref: '#/components/schemas/channelOptionsWhatsapp'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           whatsapp:
                             type: object
@@ -239,12 +250,14 @@ paths:
                         - message_type
                       - $ref: '#/components/schemas/Custom'
                       - $ref: '#/components/schemas/channelOptionsWhatsapp'
+                      - $ref: '#/components/schemas/outboundMessageType'
 
                 - title: Messenger
                   x-tab-id: Messenger
                   oneOf:
                     - allOf:
                       - $ref: '#/components/schemas/Text'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           text:
                             description: |
@@ -252,6 +265,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsMessenger'
                     - allOf:
                       - $ref: '#/components/schemas/Image'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           image:
                             properties:
@@ -265,6 +279,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsMessenger'
                     - allOf:
                       - $ref: '#/components/schemas/Audio'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           audio:
                             properties:
@@ -278,6 +293,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsMessenger'
                     - allOf:
                       - $ref: '#/components/schemas/Video'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           video:
                             properties:
@@ -289,6 +305,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsMessenger'
                     - allOf:
                       - $ref: '#/components/schemas/File'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           file:
                             properties:
@@ -303,6 +320,7 @@ paths:
                   oneOf:
                     - allOf:
                       - $ref: '#/components/schemas/Text'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           text:
                             description: |
@@ -310,6 +328,7 @@ paths:
                       - $ref: '#/components/schemas/channelOptionsViber'
                     - allOf:
                       - $ref: '#/components/schemas/Image'
+                      - $ref: '#/components/schemas/outboundMessageType'
                       - properties:
                           image:
                             properties:
@@ -1212,6 +1231,8 @@ components:
         - message
         - message_type
         - channel
+    outboundMessageType:
+      type: object
       properties:
         client_ref:
           type: string
