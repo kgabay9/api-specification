@@ -3,7 +3,7 @@ servers:
   - url: "https://api.nexmo.com/verify"
 info:
   title: Verify API
-  version: 1.2.2
+  version: 1.2.3
   description: >-
     The Verify API helps you to implement 2FA (two-factor authentication) in your applications.
     This is useful for:
@@ -891,9 +891,17 @@ components:
         invalid_parameters:
           type: array
           description: Detailed payload of errors.
-          example:
-            name: network
-            reason: Network not found
+          items:
+            type: object
+            properties:
+              name:
+                description: The name of the parameter.
+                example: network
+                type: string
+              reason:
+                description: The reason for the parameter error.
+                example: Network not found
+                type: string
     
     networkUnblockResponseInvalidDuration:
       type: object
@@ -920,9 +928,17 @@ components:
         invalid_parameters:
           type: array
           description: Detailed payload of errors.
-          example:
-            name: unblock_duration
-            reason: Must be an integer in minutes
+          items:
+            type: object
+            properties:
+              name:
+                description: The name of the parameter.
+                example: network
+                type: string
+              reason:
+                description: The reason for the parameter error.
+                example: Network not found
+                type: string
     
     requestErrorResponse:
       type: object
