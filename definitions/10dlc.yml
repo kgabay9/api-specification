@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  version: 1.0.7
+  version: 1.0.8
   title: 10DLC Brand and Campaign Provisioning
   contact:
     name: Vonage
@@ -632,6 +632,14 @@ components:
           brand_tier: "LOW"
         auto_renewal: true
         status: "ACTIVE"
+        opt_in_message: |
+          Example Brand: You are now opted-in. For help, reply HELP. To opt-out,
+            reply STOP
+        opt_out_message: |
+          Example Brand: You are now opted-out and will receive no further messages.
+        opt_in_keywords: START,SUBSCRIBE
+        opt_out_keywords: STOP,QUIT
+        help_keywords: HELP,INFO
         _links:
           self:
             $ref: "#/components/examples/LinkCampaign"
@@ -1453,6 +1461,8 @@ components:
                   - subscriber_opt_in
                   - subscriber_opt_out
                   - subscriber_help
+                  - message_flow
+                  - help_message
 
     ExistingVettingRequest:
       required: true
@@ -2049,6 +2059,7 @@ components:
         description:
           type: string
           description: Summary description of this campaign
+          minLength: 40
           example:
             $ref: "#/components/examples/Campaign/value/description"
         embedded_link:
@@ -2124,6 +2135,7 @@ components:
         message_flow:
           type: string
           description: Message flow description
+          minLength: 40
           maxLength: 2048
           example:
             $ref: "#/components/examples/Campaign/value/message_flow"
@@ -2141,6 +2153,54 @@ components:
           description: Does message content controlled by affiliate marketing other than the brand?
           example:
             $ref: "#/components/examples/Campaign/value/affiliate_marketing"
+        opt_in_message:
+          description: >
+            Opt in message sent to confirmation enrollment to a recurring message campaign. Also provide information on how to get `HELP` or undo enrollment.
+            If consumers can text in a keyword,the response should include the Brand name.
+            <br>
+            **NB: Required if recipient opted in via SMS**
+          type: string
+          minLength: 20
+          maxLength: 255
+          example:
+            $ref: "#/components/examples/Campaign/value/opt_in_message"
+        opt_out_message:
+          description: >
+            Opt out message of the campaign.
+            The response to the `STOP` keyword may include the Brand name but should
+            include an acknowledgement of the opt-out request and confirmation that no further
+            messages will be sent.
+            <br>
+            **NB: Required if recipient opted in via SMS**
+          type: string
+          minLength: 20
+          maxLength: 255
+          example:
+            $ref: "#/components/examples/Campaign/value/opt_out_message"
+        opt_in_keywords:
+          description: |
+            Opt in keywords for the campaign, separated by commas(,).
+          type: string
+          maxLength: 255
+          example:
+            $ref: "#/components/examples/Campaign/value/opt_in_keywords"
+        opt_out_keywords:
+          description: |
+            Opt out keywords for the campaign, separated by commas(,).
+          type: string
+          maxLength: 255
+          default: STOP
+          example:
+            $ref: "#/components/examples/Campaign/value/opt_out_keywords"
+        help_keywords:
+          description: |
+            Help keywords for the campaign, separated by commas(,).
+          type: string
+          minLength: 20
+          maxLength: 255
+          default: HELP
+          example:
+            $ref: "#/components/examples/Campaign/value/help_keywords"
 
     CampaignEditableFields:
       description: Fields that are editable for a campaign
