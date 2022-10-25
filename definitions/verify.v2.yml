@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  title: Vonage Verify API (v2)
+  title: Vonage Verify API (v2) - Early Access
   version: 0.0.14
   description: Verify API provides a choice of routes for sending a code to a user. You can use this to confirm a user's contact information, as a second factor when authenticating users, or for step-up authentication.
   contact:
@@ -250,6 +250,7 @@ components:
         - $ref: '#/components/schemas/NewCodeRequestWorkflowWhatsApp'
         - $ref: '#/components/schemas/NewCodeRequestWorkflowWhatsAppInteractive'
         - $ref: '#/components/schemas/NewCodeRequestWorkflowVoice'
+        - $ref: '#/components/schemas/NewCodeRequestWorkflowEmail'
 
     NewCodeRequestWorkflowSMS:
       title: SMS
@@ -345,9 +346,8 @@ components:
                     example: whatsapp
                   to:
                     $ref: '#/components/schemas/To'
-                  template:
-                    type: string
-                    example: abc:123:verify
+                  from:
+                    $ref: '#/components/schemas/From'
                 required:
                   - channel
                   - to
@@ -382,9 +382,6 @@ components:
                     example: whatsapp_interactive
                   to:
                     $ref: '#/components/schemas/To'
-                  template:
-                    type: string
-                    example: abc:123:verify
                 required:
                   - channel
                   - to
@@ -397,6 +394,42 @@ components:
           required:
             - workflow
             - brand
+
+    NewCodeRequestWorkflowEmail:
+      title: Email
+      x-tab-id: WorkflowEmail
+      allOf:
+        - $ref: '#/components/schemas/NewRequestBase'
+        - type: object
+          description: Request an email code be sent to the user.
+          properties:
+            workflow:
+              type: array
+              items:
+                type: object
+                properties:
+                  channel:
+                    type: string
+                    description: "The channel"
+                    enum: 
+                      - email
+                    example: email
+                  to:
+                    $ref: '#/components/schemas/ToEmail'
+                  from:
+                    $ref: '#/components/schemas/FromEmail'
+                required:
+                  - channel
+                  - to
+              example: [
+                  {
+                    "channel": "email",
+                    "to": "alice@company.com",
+                    "from": "bob@company.com"
+                  }
+                ]
+          required:
+            - workflow
 
     NewPSD2Request:
       allOf:
@@ -453,6 +486,25 @@ components:
       maxLength: 50
       example: '447700900000'
       description: The phone number to contact, in the [E.164](https://en.wikipedia.org/wiki/E.164) format. Don't use a leading + or 00 when entering a phone number, start with the country code, for example, 447700900000.
+
+    From:
+      type: string
+      minLength: 1
+      maxLength: 50
+      example: '447700400080'
+      description: An optional sender number, in the [E.164](https://en.wikipedia.org/wiki/E.164) format. Don't use a leading + or 00 when entering a phone number, start with the country code, for example, 447700900000.
+
+    ToEmail:
+      type: string
+      format: email
+      example: 'alice@company.com'
+      description: The email address to send the verification request to.
+
+    FromEmail:
+      type: string
+      format: email
+      example: 'bob@company.com'
+      description: The email address to send the verification request from.
 
     CodeLength:
       type: integer
