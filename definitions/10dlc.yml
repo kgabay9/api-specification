@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  version: 1.0.8
+  version: 1.0.9
   title: 10DLC Brand and Campaign Provisioning
   contact:
     name: Vonage
@@ -1966,34 +1966,7 @@ components:
       properties:
         account_id:
           $ref: "#/components/schemas/AccountID"
-        vertical:
-          type: string
-          description:
-            Business/industry segment of this campaign. (Required if entity_type !=
-            SOLE_PROPRIETOR). Please refer to the /enum endpoint for an update list
-            of valid values.
-          maxLength: 50
-          enum:
-            - UNKNOWN
-            - REAL_ESTATE
-            - HEALTHCARE
-            - ENERGY
-            - ENTERTAINMENT
-            - RETAIL
-            - AGRICULTURE
-            - INSURANCE
-            - EDUCATION
-            - HOSPITALITY
-            - FINANCIAL
-            - GAMBLING
-            - CONSTRUCTION
-            - NGO
-            - MANUFACTURING
-            - GOVERNMENT
-            - TECHNOLOGY
-            - COMMUNICATION
-          example:
-            $ref: "#/components/examples/Campaign/value/vertical"
+
         usecase:
           type: string
           description: Campaign usecase
